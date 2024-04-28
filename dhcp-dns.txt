@@ -1,0 +1,20 @@
+# the unique ttl time is a marker of a dynamic dns record
+:local dttl 8:58:58
+# the domain name for this dhcp server
+:local domain .domain.local.
+
+:if ($leaseBound=0 or [:len $"lease-hostname"]=0) do={
+  /ip dns static remove [find ttl=$dttl address=$leaseActIP];
+}
+
+:if ($leaseBound=1 and [:len $"lease-hostname"]>0) do={
+  /ip dns static ;
+  :foreach i in [find ttl=$dttl address=$leaseActIP] do={
+    :if ([get $i name]!=($"lease-hostname" . $domain)) do={
+      remove $i
+    }
+  }
+  :if ([:len [find ttl=$dttl name=($"lease-hostname" . $domain) address=$leaseActIP]]=0) do={:do {
+    add type=A ttl=$dttl name=($"lease-hostname" . $domain) address=$leaseActIP ;
+  } on-error={log error message=("error adding dns fron dhcp: name=" . $"lease-hostname" . " address=" . $leaseActIP)} };
+}
