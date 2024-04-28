@@ -1,0 +1,24 @@
+# the unique ttl time is a marker of a dynamic dns record
+:local dttl 08:58:58
+# list of domain names for all dhcp servers
+:local domains [:toarray .domain.local.,.domain.com.]
+
+/ip dns static ;
+:foreach i in=[find ttl=$dttl] do={
+  :local addr [get $i address] ;
+  :local dname [get $i name] ;
+  :local del true ;
+  /ip dhcp-server lease ;
+  :foreach ii in=[find address=$addr] do={
+    :local lname [get $ii host-name] ;
+    :foreach dom in=$domains do={
+      :if ($dname=($lname . $dom)) do={
+        :set del false ;
+      }
+    }
+  }
+  :if ($del=true) do={
+    /ip dns static ;
+    remove $i ;
+  }
+}
