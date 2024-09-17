@@ -1,0 +1,9 @@
+# time for enable rule in seconds
+:local time 900
+# description of firewall rule (first normally disabled input allow rule)
+:local desc STARTUP-TEMP-RULE
+
+/ip firewall filter ;
+add chain=input place-before=0 comment=$desc ;
+:delay $time ;
+remove [ find comment=$desc ] ;
