@@ -1,3 +1,10 @@
+# startup-temp-rule
+
+Temporary add first allow firewall filter input rule.
+
+Put the script into /system/script and run by cron when reboot.
+Policy: read, write.
+
 # blacklist-update
 
 Update the blacklist in /ip/firewall/address-list from spamhaus.
