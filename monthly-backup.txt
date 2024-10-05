@@ -1,0 +1,6 @@
+# Policy: read, policy, test
+
+:local flash "flash/" ; :do { /file get flash } on-error= { :set flash "" }
+:local month [ /system clock get date ] ; :if ( [ :len $month ]=10) do={ :set month [ :pick $month 5 7 ] } else= { :set month [ :pick $month 0 3 ] }
+
+/system backup save name=( $flash . "month-" . $month ) ;
