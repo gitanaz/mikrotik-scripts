@@ -3,7 +3,7 @@
 # the domain name for this dhcp server
 :local domain .domain.local.
 
-:log info "bound=$leaseBound hostname=$lease-hostname address=$leaseActIP"
+:log info "DHCP-DNS bound=$leaseBound hostname=$lease-hostname address=$leaseActIP" ;
 
 :if ($leaseBound=0 or [:len $"lease-hostname"]=0) do={
   /ip dns static remove [find ttl=$dttl address=$leaseActIP] ;
