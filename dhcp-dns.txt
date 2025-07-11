@@ -1,7 +1,7 @@
 # the unique ttl time is a marker of a dynamic dns record
 :local dttl 8:58:58;
 # the domain name for this dhcp server
-:local domain .anaz.local.;
+:local domain .localdomain.local.;
 
 :log debug "DHCP-DNS bound=$leaseBound hostname=$"lease-hostname" address=$leaseActIP";
 /ip dns static;
