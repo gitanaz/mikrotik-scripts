@@ -1,9 +1,14 @@
+# Policy: read, write
+
 # time for enable rule in seconds
-:local time 900
+:local time 15m ;
 # description of firewall rule (first normally disabled input allow rule)
-:local desc STARTUP-TEMP-RULE
+:local desc STARTUP-TEMP-RULE ;
 
 /ip firewall filter ;
 add chain=input place-before=0 comment=$desc ;
 :delay $time ;
 remove [ find comment=$desc ] ;
+
+/ip firewall connection;
+remove [find where protocol=udp];
