@@ -1,23 +1,28 @@
 # the unique ttl time is a marker of a dynamic dns record
-:local dttl 8:58:58
+:local dttl 8:58:58;
 # the domain name for this dhcp server
-:local domain .domain.local.
+:local domain .anaz.local.;
 
-:log info "DHCP-DNS bound=$leaseBound hostname=$lease-hostname address=$leaseActIP" ;
-
-:if ($leaseBound=0 or [:len $"lease-hostname"]=0) do={
-  /ip dns static remove [find ttl=$dttl address=$leaseActIP] ;
-}
-
+:log debug "DHCP-DNS bound=$leaseBound hostname=$"lease-hostname" address=$leaseActIP";
+/ip dns static;
 :if ($leaseBound=1 and [:len $"lease-hostname"]>0) do={
-  :delay 15s ;
-  /ip dns static ;
-  :foreach i in [find ttl=$dttl address=$leaseActIP] do={
-    :if ([get $i name]!=($"lease-hostname" . $domain)) do={
-      remove $i
-    }
+  :local hostname $"lease-hostname"
+  :if ([:find in=$hostname key="."]) do={} else={
+    :set hostname ($"lease-hostname" . $domain)
+    :log debug "DHCP-DNS change hostname to $hostname";
   }
-  :if ([:len [find ttl=$dttl name=($"lease-hostname" . $domain) address=$leaseActIP]]=0) do={:do {
-    add type=A ttl=$dttl name=($"lease-hostname" . $domain) address=$leaseActIP ;
-  } on-error={log error message=("error adding dns fron dhcp: name=" . $"lease-hostname" . " address=" . $leaseActIP)} } ;
+  :if ([find ttl=$dttl name=$hostname address!=$leaseActIP]) do={
+    remove [find ttl=$dttl name=$hostname address!=$leaseActIP];
+    :log info "DHCP-DNS remove another address hostname=$hostname";
+  }
+  :if ([find ttl=$dttl name!=$hostname address=$leaseActIP]) do={
+    remove [find ttl=$dttl name!=$hostname address=$leaseActIP];
+    :log info "DHCP-DNS remove another hostname address=$leaseActIP";
+  }
+  :if ([find address=$leaseActIP]) do={
+      :log info "DHCP-DNS address=$leaseActIP already exist";
+    } else={:do {
+    add type=A ttl=$dttl name=$hostname address=$leaseActIP;
+    :log info "DHCP-DNS add hostname=$hostname address=$leaseActIP";
+  } on-error={:log error message=("DHCP-DNS error adding name=$"lease-hostname" ($hostname) address=$leaseActIP")}}
 }
