@@ -1,5 +1,5 @@
 /system script
-add dont-require-permissions=no name=autorestart-not-running-interface policy=read source="# policy: read\
+add dont-require-permissions=no name=autorestart-not-running-interface policy=read,write source="# policy: read\
     \n# label in interface description\
     \nlocal desc AUTORESART-NOT-RUNNING\
     \n# time for disable interface\
@@ -17,4 +17,4 @@ add dont-require-permissions=no name=autorestart-not-running-interface policy=re
     \n}\
     \n"
 /system scheduler
-add interval=1h name=autorestart-not-running-interface on-event=autorestart-not-running-interface policy=read start-date=dec/30/2024 start-time=00:00:00
+add interval=1h name=autorestart-not-running-interface on-event=autorestart-not-running-interface policy=read,write start-date=dec/30/2024 start-time=00:00:00
