@@ -1,7 +1,7 @@
 /system script
 add dont-require-permissions=no name=autorestart-not-running-interface policy=read,write source="# policy: read\
     \n# label in interface description\
-    \nlocal desc AUTORESART-NOT-RUNNING\
+    \nlocal desc AUTORESTART-NOT-RUNNING\
     \n# time for disable interface\
     \nlocal time 900s\
     \n\
